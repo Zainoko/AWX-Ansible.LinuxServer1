@@ -1,0 +1,8 @@
+---
+- name: Ping Ubuntu Server Test
+  hosts: Server
+  become: false
+
+  tasks:
+    - name: Test connectivity to the server
+      ping:
