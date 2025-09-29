@@ -2,10 +2,6 @@
 - name: Configure Ubuntu File Server for One User (Admin Group Access)
   hosts: fileserver
   become: true
-  vars:
-    samba_user: fileuser
-    samba_password: P@ssw0rd123
-    share_path: "/home/{{ samba_user }}/share"
 
   tasks:
 
