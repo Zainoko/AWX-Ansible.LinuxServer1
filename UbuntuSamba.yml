@@ -37,13 +37,6 @@
         responses:
           'New SMB password:': "{{ samba_password }}"
           'Retype new SMB password:': "{{ samba_password }}"
-      when: samba_user_smb_exists.rc != 0
-      register: add_smb_user
-
-    - name: Check if Samba user exists
-      command: pdbedit -L -u {{ samba_user }}
-      register: samba_user_smb_exists
-      failed_when: false
 
     - name: Configure Samba share for sudo group
       blockinfile:
