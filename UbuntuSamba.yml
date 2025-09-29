@@ -36,7 +36,7 @@
       args:
         creates: "/var/lib/samba/private/passdb.tdb"
 
-    - name: Configure Samba share for admin group
+    - name: Configure Samba share for sudo group
       blockinfile:
         path: /etc/samba/smb.conf
         block: |
