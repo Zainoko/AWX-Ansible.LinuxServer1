@@ -1,0 +1,59 @@
+---
+- name: Configure Ubuntu File Server for One User (Admin Group Access)
+  hosts: fileserver
+  become: true
+  vars:
+    samba_user: fileuser
+    samba_password: P@ssw0rd123
+    share_path: "/home/{{ samba_user }}/share"
+
+  tasks:
+
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Samba
+      apt:
+        name: samba
+        state: present
+
+    - name: Create system user
+      user:
+        name: "{{ samba_user }}"
+        shell: /bin/false
+        create_home: yes
+        password: "{{ samba_password | password_hash('sha512') }}"
+        groups: admin
+        append: yes
+        state: present
+
+    - name: Create personal share directory
+      file:
+        path: "{{ share_path }}"
+        state: directory
+        owner: "{{ samba_user }}"
+        group: admin
+        mode: '0775'
+
+    - name: Add Samba user
+      command: "echo '{{ samba_password }}' | smbpasswd -a -s {{ samba_user }}"
+      args:
+        creates: "/var/lib/samba/private/passdb.tdb"
+
+    - name: Configure Samba share for admin group
+      blockinfile:
+        path: /etc/samba/smb.conf
+        block: |
+          [{{ samba_user }}]
+          path = {{ share_path }}
+          browsable = yes
+          read only = no
+          guest ok = no
+          admin users = {{ samba_user }}
+
+    - name: Restart Samba service
+      systemd:
+        name: smbd
+        state: restarted
+        enabled: yes
