@@ -39,6 +39,7 @@
     - name: Configure Samba share for sudo group
       blockinfile:
         path: /etc/samba/smb.conf
+        insertafter: '^\[global\]'   # insert after the [global] section
         block: |
           [{{ samba_user }}]
           path = {{ share_path }}
@@ -46,6 +47,7 @@
           read only = no
           guest ok = no
           admin users = {{ samba_user }}
+
 
     - name: Restart Samba service
       systemd:
