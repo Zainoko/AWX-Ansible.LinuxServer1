@@ -28,7 +28,7 @@
         path: "{{ share_path }}"
         state: directory
         owner: "{{ samba_user }}"
-        group: admin
+        group: sudo
         mode: '0775'
 
     - name: Add Samba user
