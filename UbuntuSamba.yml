@@ -1,10 +1,9 @@
 ---
 - name: Configure Ubuntu File Server for One User (Admin Group Access)
-  hosts: fileserver
+  hosts: Server
   become: true
 
   tasks:
-
     - name: Update apt cache
       apt:
         update_cache: yes
