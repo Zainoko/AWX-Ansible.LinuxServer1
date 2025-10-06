@@ -1,6 +1,6 @@
 ---
 - name: Setup Simple Nginx Web Server
-  hosts: Server
+  hosts: webservers
   become: yes
 
   vars:
@@ -31,9 +31,14 @@
         state: started
         enabled: yes
 
-    - name: Allow HTTP traffic in firewall
-      ufw:
-        rule: allow
-        port: '80'
-        proto: tcp
-      when: ansible_os_family == "Debian"
+    - name: Check if web server is accessible
+      uri:
+        url: http://localhost
+        status_code: 200
+      register: webpage_result
+      ignore_errors: yes
+
+    - name: Show web server status
+      debug:
+        msg: "Web server is running and accessible"
+      when: webpage_result.status == 200
