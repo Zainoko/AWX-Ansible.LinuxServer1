@@ -1,6 +1,6 @@
 ---
 - name: Remove Nginx Web Server Completely
-  hosts: webservers
+  hosts: Server
   become: yes
 
   vars:
@@ -23,16 +23,12 @@
         state: absent
       ignore_errors: yes
 
-    - name: Remove firewall rule for HTTP
-      ufw:
-        rule: allow
-        port: '80'
-        proto: tcp
-        state: disabled
-      when: ansible_os_family == "Debian"
+    - name: Verify nginx is removed
+      command: which nginx
+      register: nginx_check
+      failed_when: nginx_check.rc == 0
+      changed_when: false
 
-    - name: Remove nginx configuration files
-      file:
-        path: /etc/nginx
-        state: absent
-      ignore_errors: yes
+    - name: Show removal status
+      debug:
+        msg: "Nginx has been completely removed"
