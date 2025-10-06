@@ -1,6 +1,6 @@
 ---
 - name: Setup Simple Nginx Web Server
-  hosts: webservers
+  hosts: Server
   become: yes
 
   vars:
