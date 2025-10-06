@@ -1,0 +1,38 @@
+---
+- name: Remove Nginx Web Server Completely
+  hosts: webservers
+  become: yes
+
+  vars:
+    web_root: /var/www/html
+
+  tasks:
+    - name: Stop nginx service
+      systemd:
+        name: nginx
+        state: stopped
+
+    - name: Remove custom index.html
+      file:
+        path: "{{ web_root }}/index.html"
+        state: absent
+
+    - name: Remove default nginx website
+      file:
+        path: /var/www/html
+        state: absent
+      ignore_errors: yes
+
+    - name: Remove firewall rule for HTTP
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+        state: disabled
+      when: ansible_os_family == "Debian"
+
+    - name: Remove nginx configuration files
+      file:
+        path: /etc/nginx
+        state: absent
+      ignore_errors: yes
