@@ -7,6 +7,7 @@
     website_content: "Hello World from {{ ansible_hostname }}"
     web_root: /var/www/html
 
+  tasks:
     - name: Create custom index.html
       copy:
         content: |
