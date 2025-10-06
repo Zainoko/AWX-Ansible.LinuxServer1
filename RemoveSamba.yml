@@ -16,7 +16,7 @@
     - name: Remove Samba share config
       blockinfile:
         path: /etc/samba/smb.conf
-        marker: "# {mark} ANSIBLE MANAGED BLOCK - {{ samba_user }} share"
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
         state: absent
 
     - name: Remove share directory
