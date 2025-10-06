@@ -16,10 +16,3 @@
       file:
         path: "{{ web_root }}/index.html"
         state: absent
-
-    - name: Remove default nginx website
-      file:
-        path: /var/www/html
-        state: absent
-      ignore_errors: yes
-
