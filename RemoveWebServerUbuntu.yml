@@ -23,12 +23,3 @@
         state: absent
       ignore_errors: yes
 
-    - name: Verify nginx is removed
-      command: which nginx
-      register: nginx_check
-      failed_when: nginx_check.rc == 0
-      changed_when: false
-
-    - name: Show removal status
-      debug:
-        msg: "Nginx has been completely removed"
