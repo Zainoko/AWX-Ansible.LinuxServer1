@@ -1,0 +1,38 @@
+---
+- name: Setup Simple Nginx Web Server
+  hosts: Server
+  become: yes
+
+  vars:
+    website_content: "Hello World from {{ ansible_hostname }}"
+    web_root: /var/www/html
+
+    - name: Create custom index.html
+      copy:
+        content: |
+          <!DOCTYPE html>
+          <html>
+          <head><title>Welcome</title></head>
+          <body>
+          <h1>{{ website_content }}</h1>
+          <p>Server: {{ ansible_hostname }}</p>
+          <p>IP: {{ ansible_default_ipv4.address }}</p>
+          </body>
+          </html>
+        dest: "{{ web_root }}/index.html"
+        owner: www-data
+        group: www-data
+        mode: '0644'
+
+    - name: Ensure nginx is running and enabled
+      systemd:
+        name: nginx
+        state: started
+        enabled: yes
+
+    - name: Allow HTTP traffic in firewall
+      ufw:
+        rule: allow
+        port: '80'
+        proto: tcp
+      when: ansible_os_family == "Debian"
