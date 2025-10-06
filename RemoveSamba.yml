@@ -1,0 +1,36 @@
+---
+- name: Clean Samba Configuration Only
+  hosts: Server
+  become: true
+
+  vars:
+    samba_user: fileuser 
+    samba_password: P@ssword123
+    share_path: "/home/{{ samba_user }}/share"
+
+  tasks:
+    - name: Remove Samba user
+      command: smbpasswd -x {{ samba_user }}
+      ignore_errors: yes
+
+    - name: Remove Samba share config
+      blockinfile:
+        path: /etc/samba/smb.conf
+        marker: "# {mark} ANSIBLE MANAGED BLOCK"
+        state: absent
+
+    - name: Remove share directory
+      file:
+        path: "{{ share_path }}"
+        state: absent
+
+    - name: Remove system user
+      user:
+        name: "{{ samba_user }}"
+        state: absent
+        remove: yes
+
+    - name: Restart Samba to apply changes
+      systemd:
+        name: smbd
+        state: restarted
