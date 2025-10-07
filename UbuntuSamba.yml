@@ -4,6 +4,15 @@
   become: true
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Samba
+      apt:
+        name: samba
+        state: present
+  
     - name: Create system user
       user:
         name: "{{ samba_user }}"
