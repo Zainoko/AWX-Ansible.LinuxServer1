@@ -8,16 +8,40 @@
     web_root: /var/www/html
 
   tasks:
+    - name: Update apt cache
+      apt:
+        update_cache: yes
+
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        
     - name: Create custom index.html
       copy:
         content: |
           <!DOCTYPE html>
           <html>
-          <head><title>Welcome</title></head>
+          <head>
+          <title>Web Server Test</title>
+          <style>
+          body { font-family: Arial; text-align: center; padding: 50px; }
+          .success { color: green; font-size: 24px; }
+          .info { background: #f0f8ff; padding: 20px; margin: 20px; border-radius: 10px; }
+          </style>
+          </head>
           <body>
-          <h1>{{ website_content }}</h1>
-          <p>Server: {{ ansible_hostname }}</p>
-          <p>IP: {{ ansible_default_ipv4.address }}</p>
+          <h1 class="success">✅ Web Server Working!</h1>
+          <p>Your Nginx server is successfully serving HTML pages.</p>
+          <div class="info">
+          <h3>Server Information</h3>
+          <p><strong>Current Time:</strong> <span id="time"></span></p>
+          <p><strong>Client IP:</strong> Your connection is active</p>
+          </div>
+
+          <script>
+          document.getElementById('time').textContent = new Date().toString();
+          </script>
           </body>
           </html>
         dest: "{{ web_root }}/index.html"
