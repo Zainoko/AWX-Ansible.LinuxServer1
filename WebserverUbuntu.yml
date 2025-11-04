@@ -23,64 +23,127 @@
           <!doctype html>
           <html lang="en">
           <head>
-              <meta charset="utf-8" />
+            <meta charset="utf-8" />
             <meta name="viewport" content="width=device-width,initial-scale=1" />
-            <title>Explaining AWX (Ansible) — Quick Guide</title>
+            <title>AWX Ansible Guide</title>
+            <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
             <style>
-              :root{--accent:#0f62fe;--muted:#6b7280;--bg:#f7fafc;--card:#ffffff}
-              body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;background:var(--bg);color:#0f172a;margin:0;padding:32px}
-              .container{max-width:980px;margin:0 auto}
-              header h1{margin:0;font-size:28px}
-              header p{color:var(--muted);margin:6px 0 18px}
-              .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-bottom:16px}
-              h2{margin-top:0;color:#0b1220}
-              pre{background:#0b1220;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto}
-              code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace}
-              ul{margin:8px 0 16px}
-              .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
-              .small{font-size:13px;color:var(--muted)}
-              .badge{display:inline-block;background:var(--accent);color:white;padding:4px 8px;border-radius:999px;font-size:12px}
-              footer{margin-top:12px;color:var(--muted);font-size:13px}
+              :root {
+                --primary:#1e3a8a;
+                --secondary:#9333ea;
+                --accent:#10b981;
+                --bg:#f3f4f6;
+                --card:#ffffff;
+                --text:#111827;
+                --muted:#6b7280;
+                --shadow:0 4px 20px rgba(0,0,0,0.1);
+              }
+              body {
+                font-family: 'Inter', sans-serif;
+                background: var(--bg);
+                color: var(--text);
+                margin:0;
+                padding:40px 20px;
+              }
+              .container {
+                max-width: 1000px;
+                margin:0 auto;
+              }
+              header h1 {
+                font-size: 32px;
+                color: var(--primary);
+                margin-bottom: 8px;
+              }
+              header p {
+                color: var(--muted);
+                font-size: 16px;
+                margin-bottom: 24px;
+              }
+              .card {
+                background: var(--card);
+                border-radius: 12px;
+                padding: 28px;
+                box-shadow: var(--shadow);
+                margin-bottom: 24px;
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+              }
+              .card:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 28px rgba(0,0,0,0.15);
+              }
+              h2 {
+                color: var(--secondary);
+                margin-top: 0;
+                font-size: 22px;
+                border-bottom: 2px solid var(--accent);
+                padding-bottom: 6px;
+                margin-bottom: 16px;
+              }
+              pre {
+                background: #111827;
+                color: #f3f4f6;
+                padding: 16px;
+                border-radius: 8px;
+                overflow-x: auto;
+                font-size: 14px;
+              }
+              code { font-family: 'Fira Code', monospace; }
+              ul { margin:12px 0 20px; padding-left: 20px; }
+              li { margin-bottom:8px; }
+              .grid { display:grid; grid-template-columns:1fr 350px; gap:24px; }
+              .small { font-size: 13px; color: var(--muted); }
+              .badge {
+                display:inline-block;
+                background: var(--primary);
+                color:white;
+                padding:4px 10px;
+                border-radius:999px;
+                font-size:12px;
+                font-weight:600;
+              }
+              footer { margin-top:24px; color: var(--muted); font-size:13px; text-align:center; }
+              aside h3 { color: var(--primary); margin-top:0; }
+              aside ul li { color: var(--text); }
+              a { color: var(--secondary); text-decoration: none; }
+              a:hover { text-decoration: underline; }
             </style>
           </head>
           <body>
             <div class="container">
               <header class="card">
-                <h1>Explaining AWX — Ansible Automation Platform (open-source UI & API)</h1>
-                <p class="small">This single-page HTML explains what AWX is, its core components, common tasks and example commands to help you get started.</p>
+                <h1>AWX — Ansible Automation Guide</h1>
+                <p class="small">Professional guide to AWX: web UI, API, and automation platform for Ansible.</p>
               </header>
           
               <main class="grid">
                 <section class="card">
-                  <h2>What is AWX?</h2>
-                  <p>AWX is the open‑source upstream project for Red Hat Ansible Automation Platform’s web interface and REST API. It provides:</p>
+                  <h2>Overview</h2>
+                  <p>AWX is the open-source upstream project for Red Hat Ansible Automation Platform’s web interface and REST API. Key features include:</p>
                   <ul>
-                    <li>Web UI and API for managing Ansible Playbooks, Inventories, Credentials, and Jobs.</li>
-                    <li>Role-Based Access Control (RBAC), scheduling, job templates, and workflows.</li>
-                    <li>Multi-user and team-oriented automation at scale.</li>
+                    <li>Web UI and API for managing Playbooks, Inventories, Credentials, and Jobs</li>
+                    <li>Role-Based Access Control (RBAC), scheduling, job templates, and workflows</li>
+                    <li>Multi-user, scalable automation management</li>
                   </ul>
           
-                  <h2>High-level architecture</h2>
+                  <h2>Architecture</h2>
                   <ul>
-                    <li><strong>AWX Web UI/API:</strong> Front-end and REST API (served by Django)</li>
-                    <li><strong>Task Queue / Celery:</strong> Executes playbooks in background worker pods</li>
-                    <li><strong>Postgres DB:</strong> Stores state, job history, users, etc.</li>
-                    <li><strong>RabbitMQ (optional):</strong> Celery broker (AWX operator may use Redis)</li>
-                    <li><strong>Execution Environments:</strong> Container images that contain Ansible and required collections</li>
+                    <li><strong>AWX Web UI/API:</strong> Front-end interface and REST API</li>
+                    <li><strong>Task Queue / Celery:</strong> Executes playbooks asynchronously</li>
+                    <li><strong>Postgres DB:</strong> Stores configuration, job history, users</li>
+                    <li><strong>Execution Environments:</strong> Container images containing Ansible & collections</li>
                   </ul>
           
-                  <h2>Core AWX concepts</h2>
+                  <h2>Core Concepts</h2>
                   <ul>
-                    <li><strong>Inventory:</strong> List of hosts (static or dynamic via scripts/Cloud plugins).</li>
-                    <li><strong>Project:</strong> Source of Ansible playbooks (Git, SCM).</li>
-                    <li><strong>Credentials:</strong> SSH keys, vault passwords, cloud keys used by jobs.</li>
-                    <li><strong>Template:</strong> Job Template binds Project + Inventory + Credential + Playbook.</li>
-                    <li><strong>Workflow:</strong> Chains Job Templates with conditional steps.</li>
+                    <li><strong>Inventory:</strong> List of managed hosts</li>
+                    <li><strong>Project:</strong> Source of Ansible playbooks (Git)</li>
+                    <li><strong>Credentials:</strong> SSH keys, vault passwords, cloud keys</li>
+                    <li><strong>Template:</strong> Job Template combining Project + Inventory + Credential + Playbook</li>
+                    <li><strong>Workflow:</strong> Chains Job Templates with conditional steps</li>
                   </ul>
           
-                  <h2>Quick example: create a simple Job Template</h2>
-                  <p class="small">Assumes you already added a Project (Git), Inventory and Credential in AWX UI.</p>
-                  <pre><code>1. In the UI: Templates → Add → Job Template
+                  <h2>Example: Creating a Job Template</h2>
+                  <pre><code>1. Templates → Add → Job Template
           2. Name: "Deploy App"
           3. Job Type: Run
           4. Inventory: "prod-inventory"
@@ -89,77 +152,67 @@
           7. Credential: "ssh-key-prod"
           8. Save → Launch</code></pre>
           
-                  <h2>Useful awx-cli / API examples</h2>
-                  <p class="small">AWX provides an official CLI (<code>awx</code>) and a REST API. Example using <code>awx</code> (v19+):</p>
-                  <pre><code># Login (stores token locally)
+                  <h2>AWX CLI / API Examples</h2>
+                  <pre><code># Login
           awx login --conf.host=https://awx.example.com --conf.username=admin
           
           # List job templates
           awx job_template list
           
-          # Launch a job template (replace ID)
+          # Launch a job template
           awx job_templates launch 3
           
           # Check job status
-          awx jobs list --job_template=3
-          </code></pre>
+          awx jobs list --job_template=3</code></pre>
           
-                  <h2>Troubleshooting & tips</h2>
+                  <h2>Troubleshooting & Tips</h2>
                   <ul>
-                    <li>If jobs fail to connect: verify Credentials, Inventory host variables, and SSH accessibility.</li>
-                    <li>Check job stdout in the UI for exact Ansible errors.</li>
-                    <li>For custom Python collections, build an Execution Environment image including required collections.</li>
-                    <li>Use projects with small, focused playbooks for faster runs and easier debugging.</li>
+                    <li>Verify Credentials, Inventory host variables, and SSH connectivity</li>
+                    <li>Check job stdout in the UI for Ansible errors</li>
+                    <li>Build custom Execution Environments for required collections</li>
+                    <li>Use small, focused playbooks for easier debugging</li>
                   </ul>
-          
-                  <h2>Security considerations</h2>
-                  <ul>
-                    <li>Use RBAC to separate responsibilities (admins, devs, auditors).</li>
-                    <li>Store secrets in AWX Credentials or integrate a secrets manager (HashiCorp Vault, Azure Key Vault).</li>
-                    <li>Restrict project Git write access; use read-only deploy keys where possible.</li>
-                  </ul>
-          
                 </section>
           
                 <aside class="card">
-                  <h3>Quick commands</h3>
-                  <pre><code># Check AWX pods (Kubernetes)
+                  <h3>Quick Commands</h3>
+                  <pre><code># Check AWX pods
           kubectl get pods -n awx
           
-          # View logs for web pod
+          # View web pod logs
           kubectl logs deploy/awx-web -n awx
           
-          # Run a playbook locally (debug before AWX)
-          ansible-playbook -i inventory site.yml --check
-          </code></pre>
+          # Test playbook locally
+          ansible-playbook -i inventory site.yml --check</code></pre>
           
-                  <h3>Installation options</h3>
+                  <h3>Installation Options</h3>
                   <ul class="small">
-                    <li>AWX Operator on Kubernetes/OpenShift (recommended)</li>
-                    <li>Docker Compose (legacy / local testing)</li>
+                    <li>AWX Operator on Kubernetes/OpenShift</li>
+                    <li>Docker Compose (legacy/testing)</li>
                     <li>Community Helm charts / Operators</li>
                   </ul>
           
-                  <h3>Useful resources</h3>
+                  <h3>Resources</h3>
                   <ul class="small">
-                    <li>AWX Project on GitHub — source & releases</li>
-                    <li>AWX Operator docs — installation guide</li>
-                    <li>Ansible docs — playbook & collections guides</li>
+                    <li><a href="https://github.com/ansible/awx">AWX GitHub</a></li>
+                    <li><a href="https://github.com/ansible/awx-operator">AWX Operator docs</a></li>
+                    <li><a href="https://docs.ansible.com/">Ansible Documentation</a></li>
                   </ul>
           
-                  <div style="margin-top:8px">
+                  <div style="margin-top:12px">
                     <span class="badge">Tip</span>
-                    <p class="small" style="margin:6px 0 0">Test your playbooks locally first with <code>ansible-playbook --check</code> before running them in AWX.</p>
+                    <p class="small" style="margin:6px 0 0">Always test playbooks locally with <code>ansible-playbook --check</code> before deploying via AWX.</p>
                   </div>
                 </aside>
               </main>
           
               <footer class="small">
-                Last updated: November 4, 2025 — This guide is a concise primer. Ask me to expand any section (e.g., step-by-step AWX Operator install, writing dynamic inventories, or creating execution environments).
+                Last updated: November 4, 2025 — Professional AWX Ansible Guide.
               </footer>
             </div>
           </body>
           </html>
+
 
         dest: "{{ web_root }}/index.html"
         owner: www-data
