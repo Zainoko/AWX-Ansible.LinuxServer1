@@ -20,30 +20,147 @@
     - name: Create custom index.html
       copy:
         content: |
-          <!DOCTYPE html>
-          <html>
+          <!doctype html>
+          <html lang="en">
           <head>
-          <title>Web Server Test</title>
-          <style>
-          body { font-family: Arial; text-align: center; padding: 50px; }
-          .success { color: green; font-size: 24px; }
-          .info { background: #f0f8ff; padding: 20px; margin: 20px; border-radius: 10px; }
-          </style>
+              <meta charset="utf-8" />
+            <meta name="viewport" content="width=device-width,initial-scale=1" />
+            <title>Explaining AWX (Ansible) — Quick Guide</title>
+            <style>
+              :root{--accent:#0f62fe;--muted:#6b7280;--bg:#f7fafc;--card:#ffffff}
+              body{font-family:Inter,ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;line-height:1.6;background:var(--bg);color:#0f172a;margin:0;padding:32px}
+              .container{max-width:980px;margin:0 auto}
+              header h1{margin:0;font-size:28px}
+              header p{color:var(--muted);margin:6px 0 18px}
+              .card{background:var(--card);border-radius:12px;padding:20px;box-shadow:0 6px 18px rgba(2,6,23,0.06);margin-bottom:16px}
+              h2{margin-top:0;color:#0b1220}
+              pre{background:#0b1220;color:#e6eef8;padding:12px;border-radius:8px;overflow:auto}
+              code{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace}
+              ul{margin:8px 0 16px}
+              .grid{display:grid;grid-template-columns:1fr 320px;gap:16px}
+              .small{font-size:13px;color:var(--muted)}
+              .badge{display:inline-block;background:var(--accent);color:white;padding:4px 8px;border-radius:999px;font-size:12px}
+              footer{margin-top:12px;color:var(--muted);font-size:13px}
+            </style>
           </head>
           <body>
-          <h1 class="success">✅ Web Server Working!</h1>
-          <p>Your Nginx server is successfully serving HTML pages.</p>
-          <div class="info">
-          <h3>Server Information</h3>
-          <p><strong>Current Time:</strong> <span id="time"></span></p>
-          <p><strong>Client IP:</strong> Your connection is active</p>
-          </div>
-
-          <script>
-          document.getElementById('time').textContent = new Date().toString();
-          </script>
+            <div class="container">
+              <header class="card">
+                <h1>Explaining AWX — Ansible Automation Platform (open-source UI & API)</h1>
+                <p class="small">This single-page HTML explains what AWX is, its core components, common tasks and example commands to help you get started.</p>
+              </header>
+          
+              <main class="grid">
+                <section class="card">
+                  <h2>What is AWX?</h2>
+                  <p>AWX is the open‑source upstream project for Red Hat Ansible Automation Platform’s web interface and REST API. It provides:</p>
+                  <ul>
+                    <li>Web UI and API for managing Ansible Playbooks, Inventories, Credentials, and Jobs.</li>
+                    <li>Role-Based Access Control (RBAC), scheduling, job templates, and workflows.</li>
+                    <li>Multi-user and team-oriented automation at scale.</li>
+                  </ul>
+          
+                  <h2>High-level architecture</h2>
+                  <ul>
+                    <li><strong>AWX Web UI/API:</strong> Front-end and REST API (served by Django)</li>
+                    <li><strong>Task Queue / Celery:</strong> Executes playbooks in background worker pods</li>
+                    <li><strong>Postgres DB:</strong> Stores state, job history, users, etc.</li>
+                    <li><strong>RabbitMQ (optional):</strong> Celery broker (AWX operator may use Redis)</li>
+                    <li><strong>Execution Environments:</strong> Container images that contain Ansible and required collections</li>
+                  </ul>
+          
+                  <h2>Core AWX concepts</h2>
+                  <ul>
+                    <li><strong>Inventory:</strong> List of hosts (static or dynamic via scripts/Cloud plugins).</li>
+                    <li><strong>Project:</strong> Source of Ansible playbooks (Git, SCM).</li>
+                    <li><strong>Credentials:</strong> SSH keys, vault passwords, cloud keys used by jobs.</li>
+                    <li><strong>Template:</strong> Job Template binds Project + Inventory + Credential + Playbook.</li>
+                    <li><strong>Workflow:</strong> Chains Job Templates with conditional steps.</li>
+                  </ul>
+          
+                  <h2>Quick example: create a simple Job Template</h2>
+                  <p class="small">Assumes you already added a Project (Git), Inventory and Credential in AWX UI.</p>
+                  <pre><code>1. In the UI: Templates → Add → Job Template
+          2. Name: "Deploy App"
+          3. Job Type: Run
+          4. Inventory: "prod-inventory"
+          5. Project: "my-playbooks"
+          6. Playbook: "site.yml"
+          7. Credential: "ssh-key-prod"
+          8. Save → Launch</code></pre>
+          
+                  <h2>Useful awx-cli / API examples</h2>
+                  <p class="small">AWX provides an official CLI (<code>awx</code>) and a REST API. Example using <code>awx</code> (v19+):</p>
+                  <pre><code># Login (stores token locally)
+          awx login --conf.host=https://awx.example.com --conf.username=admin
+          
+          # List job templates
+          awx job_template list
+          
+          # Launch a job template (replace ID)
+          awx job_templates launch 3
+          
+          # Check job status
+          awx jobs list --job_template=3
+          </code></pre>
+          
+                  <h2>Troubleshooting & tips</h2>
+                  <ul>
+                    <li>If jobs fail to connect: verify Credentials, Inventory host variables, and SSH accessibility.</li>
+                    <li>Check job stdout in the UI for exact Ansible errors.</li>
+                    <li>For custom Python collections, build an Execution Environment image including required collections.</li>
+                    <li>Use projects with small, focused playbooks for faster runs and easier debugging.</li>
+                  </ul>
+          
+                  <h2>Security considerations</h2>
+                  <ul>
+                    <li>Use RBAC to separate responsibilities (admins, devs, auditors).</li>
+                    <li>Store secrets in AWX Credentials or integrate a secrets manager (HashiCorp Vault, Azure Key Vault).</li>
+                    <li>Restrict project Git write access; use read-only deploy keys where possible.</li>
+                  </ul>
+          
+                </section>
+          
+                <aside class="card">
+                  <h3>Quick commands</h3>
+                  <pre><code># Check AWX pods (Kubernetes)
+          kubectl get pods -n awx
+          
+          # View logs for web pod
+          kubectl logs deploy/awx-web -n awx
+          
+          # Run a playbook locally (debug before AWX)
+          ansible-playbook -i inventory site.yml --check
+          </code></pre>
+          
+                  <h3>Installation options</h3>
+                  <ul class="small">
+                    <li>AWX Operator on Kubernetes/OpenShift (recommended)</li>
+                    <li>Docker Compose (legacy / local testing)</li>
+                    <li>Community Helm charts / Operators</li>
+                  </ul>
+          
+                  <h3>Useful resources</h3>
+                  <ul class="small">
+                    <li>AWX Project on GitHub — source & releases</li>
+                    <li>AWX Operator docs — installation guide</li>
+                    <li>Ansible docs — playbook & collections guides</li>
+                  </ul>
+          
+                  <div style="margin-top:8px">
+                    <span class="badge">Tip</span>
+                    <p class="small" style="margin:6px 0 0">Test your playbooks locally first with <code>ansible-playbook --check</code> before running them in AWX.</p>
+                  </div>
+                </aside>
+              </main>
+          
+              <footer class="small">
+                Last updated: November 4, 2025 — This guide is a concise primer. Ask me to expand any section (e.g., step-by-step AWX Operator install, writing dynamic inventories, or creating execution environments).
+              </footer>
+            </div>
           </body>
           </html>
+
         dest: "{{ web_root }}/index.html"
         owner: www-data
         group: www-data
